@@ -1,5 +1,6 @@
 package com.example.deliveryapp.Security.Service;
 
+import com.example.deliveryapp.Configuration.Config;
 import com.example.deliveryapp.Security.Entity.ConfirmationToken;
 import com.example.deliveryapp.Security.Entity.SignUp;
 import com.example.deliveryapp.Security.Model.SignUpRequest;
@@ -26,6 +27,8 @@ public class SignUpServiceImp implements SignUpService {
   EmailSenderService emailSenderService;
   @Autowired
   SignUpResponse signUpResponse;
+  @Autowired
+  Config config;
 
   @Override
   public SignUpResponse signUp(SignUpRequest signUpRequest) {
@@ -46,10 +49,12 @@ public class SignUpServiceImp implements SignUpService {
     signUp.setConfirmationTokenList(List.of(confirmationToken));
     SignUp savedSignUp = signUpRepository.save(signUp);
 
-    String link = "http://127.0.0.1:8080/confirm?token=" + token;
+    String link = "http://" + config.getHostname() + ":" + config.getPort()
+        + "/confirm?token=" + token;
     System.out.println("verificationLink: " + link);
     String fullName = signUpRequest.getFirstName() + " " + signUpRequest.getLastName();
-    emailSenderService.send(signUpRequest.getEmailId(), emailSenderService.buildEmail(fullName, link));
+    emailSenderService.send(signUpRequest.getEmailId(),
+        emailSenderService.buildEmail(fullName, link));
 
     signUpResponse.setSignUpDetails(savedSignUp);
     signUpResponse.setMessage("User successfully registered.");

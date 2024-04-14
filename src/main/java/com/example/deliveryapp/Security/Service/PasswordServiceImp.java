@@ -1,5 +1,6 @@
 package com.example.deliveryapp.Security.Service;
 
+import com.example.deliveryapp.Configuration.Config;
 import com.example.deliveryapp.Security.Entity.PasswordResetToken;
 import com.example.deliveryapp.Security.Entity.SignUp;
 import com.example.deliveryapp.Security.Model.ChangePasswordRequest;
@@ -24,11 +25,13 @@ public class PasswordServiceImp implements PasswordService {
   EmailSenderService emailSenderService;
   @Autowired
   PasswordResetTokenRepository passwordResetTokenRepository;
+  @Autowired
+  Config config;
 
   @Override
   public String changePassword(ChangePasswordRequest changePasswordRequest) {
     SignUp signUp = signUpRepository.findByEmailId(changePasswordRequest.getEmailId());
-    if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(),signUp.getPassword())) {
+    if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), signUp.getPassword())) {
       return "Password mismatch.";
     }
     signUp.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
@@ -47,7 +50,8 @@ public class PasswordServiceImp implements PasswordService {
         LocalDateTime.now().plusMinutes(15));
     passwordResetToken.setSignUp(signUp);
     passwordResetTokenRepository.save(passwordResetToken);
-    String link = "http://127.0.0.1:8080/confirmResetPasswordLink?token=" + token;
+    String link = "http://" + config.getHostname() + ":" + config.getPort()
+        + "/confirmResetPasswordLink?token=" + token;
     String fullName = signUp.getFirstName() + " " + signUp.getLastName();
     emailSenderService.send(signUp.getEmailId(), emailSenderService.buildEmail(fullName, link));
     return link;

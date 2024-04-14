@@ -1,5 +1,6 @@
 package com.example.deliveryapp.Security.Service;
 
+import com.example.deliveryapp.Configuration.Config;
 import com.example.deliveryapp.Security.Entity.ConfirmationToken;
 import com.example.deliveryapp.Security.Repository.ConfirmationTokenRepository;
 import com.example.deliveryapp.Security.Repository.SignUpRepository;
@@ -19,6 +20,8 @@ public class ConfirmationTokenServiceImp implements ConfirmationTokenService {
   SignUpRepository signUpRepository;
   @Autowired
   EmailSenderService emailSenderService;
+  @Autowired
+  Config config;
 
   @Override
   @Transactional // will execute if the transaction is successful
@@ -45,13 +48,14 @@ public class ConfirmationTokenServiceImp implements ConfirmationTokenService {
     ConfirmationToken confirmationToken = confirmationTokenRepository.findByToken(oldToken);
     if (confirmationToken == null) {
       return "oldToken doesn't exist";
-    }else if(confirmationToken.getConfirmedAt() != null){
+    } else if (confirmationToken.getConfirmedAt() != null) {
       return "Account has already been verified";
     }
     String newToken = UUID.randomUUID().toString();
     confirmationToken.setToken(newToken);
     confirmationTokenRepository.save(confirmationToken);
-    String link = "http://127.0.0.1:8080/confirm?token=" + newToken;
+    String link = "http://" + config.getHostname() + ":" + config.getPort()
+        + "/confirm?token=" + newToken;
     String fullName =
         confirmationToken.getSignUp().getFirstName() + " " + confirmationToken.getSignUp()
             .getLastName();
