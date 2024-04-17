@@ -59,14 +59,17 @@ public class SignUp implements UserDetails {
   @OneToMany(mappedBy = "signUp", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<ConfirmationToken> confirmationTokenList;
 
-  public SignUp(String emailId, String firstName, String lastName, String password, UserRole admin) {
+  public SignUp(String emailId, String firstName, String lastName, String password,
+      UserRole admin) {
     this.emailId = emailId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.password = password;
     this.userRole = admin;
   }
-  public SignUp(String emailId, String firstName, String lastName, String password, UserRole admin, boolean enabled) {
+
+  public SignUp(String emailId, String firstName, String lastName, String password, UserRole admin,
+      boolean enabled) {
     this.emailId = emailId;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -74,6 +77,7 @@ public class SignUp implements UserDetails {
     this.userRole = admin;
     this.enabled = enabled;
   }
+
   @JsonManagedReference
   public void setConfirmationTokenList(
       List<ConfirmationToken> confirmationTokenList) {
