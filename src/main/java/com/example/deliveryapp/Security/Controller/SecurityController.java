@@ -62,7 +62,7 @@ public class SecurityController {
     return "Welcome to Daily Code Buffer!!";
   }
 
-  @PostMapping("token/login")
+  @PostMapping("/token/login")
   public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
 
     try {
