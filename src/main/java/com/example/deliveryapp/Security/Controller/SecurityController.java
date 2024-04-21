@@ -65,9 +65,9 @@ public class SecurityController {
   Config config;
 
 
-  @GetMapping("/")
+  @GetMapping("/tokenVerify")
   public String home() {
-    return "Welcome to Daily Code Buffer!!";
+    return "Token worked!!";
   }
 
   @PostMapping("/getToken")
