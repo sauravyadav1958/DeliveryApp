@@ -1,5 +1,6 @@
 package com.example.deliveryapp.Security.Controller;
 
+import com.example.deliveryapp.Configuration.Config;
 import com.example.deliveryapp.Security.Enums.UserRole;
 import com.example.deliveryapp.Security.Model.ChangePasswordRequest;
 import com.example.deliveryapp.Security.Model.JwtRequest;
@@ -14,9 +15,12 @@ import com.example.deliveryapp.Security.Service.PasswordService;
 import com.example.deliveryapp.Security.Service.SignUpService;
 import com.example.deliveryapp.Security.Service.UserDetailsServiceImp;
 import com.example.deliveryapp.Security.utility.JWTUtility;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -57,14 +61,18 @@ public class SecurityController {
   @Autowired
   private UserDetailsServiceImp userDetailsServiceImp;
 
+  @Autowired
+  Config config;
+
+
   @GetMapping("/")
   public String home() {
     return "Welcome to Daily Code Buffer!!";
   }
 
-  @PostMapping("/token/login")
-  public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
-
+  @PostMapping("/getToken")
+  public JwtResponse tokenLogin(@RequestBody JwtRequest jwtRequest, HttpServletResponse response)
+      throws Exception {
     try {
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(
@@ -79,12 +87,18 @@ public class SecurityController {
     final UserDetails userDetails
         = userDetailsServiceImp.loadUserByUsername(jwtRequest.getUsername());
 
-    final String token =
+    final String accessToken =
         jwtUtility.generateToken(userDetails);
 
-    return new JwtResponse(token);
+    ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
+        .httpOnly(true)
+        .secure(false)
+        .path("/")
+        .maxAge(config.getCookieExpiry())
+        .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    return new JwtResponse(accessToken);
   }
-
 
   @PostMapping("/admin/signUp")
   public ResponseEntity<SignUpResponse> adminSignUp(@RequestBody SignUpRequest signUpRequest) {

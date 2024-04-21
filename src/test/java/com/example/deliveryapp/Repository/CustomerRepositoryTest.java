@@ -22,7 +22,7 @@ class CustomerRepositoryTest {
   RestaurantRepository restaurantRepository;
 
   @Test
-  public void saveCustomer(){
+  public void saveCustomer() {
 
     Restaurant restaurant1 = Restaurant.builder()
         .restaurantName("veg")
@@ -67,13 +67,12 @@ class CustomerRepositoryTest {
 //    restaurantRepository.save(restaurant1);
 //    restaurantRepository.save(restaurant2);
 
-
   }
 
   @Test
-  public void getCustomer(){
-    Optional<Customer> customer = customerRepository.findById((long)102);
-    Optional<Restaurant> restaurant = restaurantRepository.findById((long)1402);
+  public void getCustomer() {
+    Optional<Customer> customer = customerRepository.findById((long) 102);
+    Optional<Restaurant> restaurant = restaurantRepository.findById((long) 1402);
     System.out.println(customer);
   }
 

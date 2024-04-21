@@ -30,9 +30,39 @@ public class WebSecurityConfig {
 
 
   private final UserDetailsServiceImp userDetailsServiceImp;
-  private static final String[] WHITE_LIST_URLS = {
-      "/saveRestaurant",
-      "/updateRestaurant",
+  private static final String[] WHITE_LIST_URLS_ADMIN_ONLY = {
+      "/admin/signUp/**",
+
+      "/admin/saveRestaurant/**",
+      "/updateRestaurant/**",
+      "/deleteRestaurant/**",
+  };
+  private static final String[] WHITE_LIST_URLS_USER_ONLY = {
+      "/user/signUp/**",
+
+      "/placeOrder/**",
+      "/getOrder/**",
+      "/getAllOrders/**",
+      "/updateOrder/**"
+  };
+
+  private static final String[] WHITE_LIST_URLS_ALL = {
+      "/confirm",
+      "/resendConfirmation",
+
+      "/changePassword",
+      "/resetPasswordLink",
+      "/confirmResetPasswordLink",
+      "/getToken"
+  };
+
+  private static final String[] WHITE_LIST_URLS_PUBLIC = {
+      "/getRestaurant",
+      "/getAllRestaurants",
+
+      "/login",
+
+      "/logout"
   };
 
   public WebSecurityConfig(UserDetailsServiceImp userDetailsServiceImp) {
@@ -98,9 +128,12 @@ public class WebSecurityConfig {
             cors -> cors.disable())
         .csrf(
             csrf -> csrf.disable()) // If service is for non-browser clients we can disable CSRF protection.
-        .authorizeRequests().antMatchers("WHITE_LIST_URLS").hasRole("ADMIN")
-        .antMatchers("*/user*", "/getOrder", "/updateOrder", "*/getAllOrders*")
-        .hasRole("USER").anyRequest().authenticated().and()
+        .authorizeHttpRequests()
+        .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN")
+        .antMatchers(WHITE_LIST_URLS_USER_ONLY).hasAuthority("USER")
+        .antMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN")
+        .antMatchers(WHITE_LIST_URLS_PUBLIC).permitAll().anyRequest().authenticated()
+        .and()
         /*
          1) Basic Auth : uses header which is base64 encoding of the username and password joined by a single colon.
          2) Format -> Authorization: Basic Base64-encoded(username:password)

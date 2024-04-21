@@ -7,6 +7,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,19 @@ public class JwtFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse, FilterChain filterChain)
       throws ServletException, IOException {
+
     String authorization = httpServletRequest.getHeader("Authorization");
     String token = null;
     String userName = null;
 
-    if (null != authorization && authorization.startsWith("Bearer ")) {
+    if (httpServletRequest.getCookies() != null) {
+      for (Cookie cookie : httpServletRequest.getCookies()) {
+        if (cookie.getName().equals("accessToken")) {
+          token = cookie.getValue();
+          userName = jwtUtility.getUsernameFromToken(token);
+        }
+      }
+    } else if (null != authorization && authorization.startsWith("Bearer ")) {
       token = authorization.substring(7);
 
       try {

@@ -14,12 +14,18 @@ public class Config {
   @Value("${server.hostname}")
   private String hostName;
 
+  @Value("${jwt.cookieExpiry}")
+  private Long cookieExpiry;
+
   public String getPort() {
     return port;
   }
 
   public String getHostname() {
     return hostName;
+  }
+  public Long getCookieExpiry() {
+    return cookieExpiry;
   }
 
 
