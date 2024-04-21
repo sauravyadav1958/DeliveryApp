@@ -53,6 +53,8 @@ public class WebSecurityConfig {
       "/changePassword",
       "/resetPasswordLink",
       "/confirmResetPasswordLink",
+
+      "/tokenVerify",
       "/getToken"
   };
 
