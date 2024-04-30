@@ -6,15 +6,19 @@ import com.example.deliveryapp.Security.Model.ChangePasswordRequest;
 import com.example.deliveryapp.Security.Model.JwtRequest;
 import com.example.deliveryapp.Security.Model.JwtResponse;
 import com.example.deliveryapp.Security.Model.LogInRequest;
+import com.example.deliveryapp.Security.Model.RefreshTokenRequest;
 import com.example.deliveryapp.Security.Model.ResetPasswordRequest;
 import com.example.deliveryapp.Security.Model.SignUpRequest;
 import com.example.deliveryapp.Security.Model.SignUpResponse;
 import com.example.deliveryapp.Security.Service.ConfirmationTokenService;
 import com.example.deliveryapp.Security.Service.LoginService;
 import com.example.deliveryapp.Security.Service.PasswordService;
+import com.example.deliveryapp.Security.Service.RefreshTokenService;
 import com.example.deliveryapp.Security.Service.SignUpService;
-import com.example.deliveryapp.Security.Service.UserDetailsServiceImp;
 import com.example.deliveryapp.Security.utility.JWTUtility;
+import com.example.deliveryapp.Security.Service.UserDetailsServiceImp;
+import java.util.Calendar;
+import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +66,9 @@ public class SecurityController {
   private UserDetailsServiceImp userDetailsServiceImp;
 
   @Autowired
+  private RefreshTokenService refreshTokenService;
+
+  @Autowired
   Config config;
 
 
@@ -97,7 +104,50 @@ public class SecurityController {
         .maxAge(config.getCookieExpiry())
         .build();
     response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-    return new JwtResponse(accessToken);
+
+    final Date expiresAt = jwtUtility.getExpirationDateFromToken(accessToken);
+    final String refreshToken = jwtUtility.generateRefreshToken(userDetails);
+    final Date refreshExpiresAtToken = jwtUtility.getExpirationDateFromToken(refreshToken);
+    final String tokenType = "Bearer";
+
+    refreshTokenService.createRefreshToken(refreshToken);
+
+    return new JwtResponse(accessToken, expiresAt, refreshToken, refreshExpiresAtToken, tokenType);
+  }
+
+  @PostMapping("/refreshToken")
+  public JwtResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest,
+      HttpServletResponse response)
+      throws Exception {
+
+    Date refreshTokenExpiryDate = jwtUtility.getExpirationDateFromToken(
+        refreshTokenRequest.getRefreshToken());
+    if (refreshTokenExpiryDate.before(Date.from(Calendar.getInstance().toInstant()))) {
+      refreshTokenService.delete(refreshTokenRequest.getRefreshToken());
+      throw new RuntimeException(
+          refreshTokenRequest.getRefreshToken()
+              + " Refresh token is expired. Please make a new login..!");
+    }
+
+    String userName = jwtUtility.getUsernameFromToken(refreshTokenRequest.getRefreshToken());
+    final UserDetails userDetails
+        = userDetailsServiceImp.loadUserByUsername(userName);
+    final String accessToken =
+        jwtUtility.generateToken(userDetails);
+
+    ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
+        .httpOnly(true)
+        .secure(false)
+        .path("/")
+        .maxAge(config.getCookieExpiry())
+        .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+    final Date expiresAt = jwtUtility.getExpirationDateFromToken(accessToken);
+    final String tokenType = "Bearer";
+
+    return new JwtResponse(accessToken, expiresAt, refreshTokenRequest.getRefreshToken(),
+        refreshTokenExpiryDate, tokenType);
   }
 
   @PostMapping("/admin/signUp")

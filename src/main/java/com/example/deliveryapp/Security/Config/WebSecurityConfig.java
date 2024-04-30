@@ -55,7 +55,6 @@ public class WebSecurityConfig {
       "/confirmResetPasswordLink",
 
       "/tokenVerify",
-      "/getToken"
   };
 
   private static final String[] WHITE_LIST_URLS_PUBLIC = {
@@ -154,10 +153,6 @@ public class WebSecurityConfig {
         .sessionManagement().
         sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-//        .oauth2Login(oauth2login ->
-//            oauth2login.loginPage("/oauth2/authorization/api-client-oidc"))
-//        .oauth2Client(Customizer.withDefaults());
 
     return http.build();
   }

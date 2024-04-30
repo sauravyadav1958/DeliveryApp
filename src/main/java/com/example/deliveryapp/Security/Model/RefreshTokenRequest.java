@@ -1,19 +1,14 @@
 package com.example.deliveryapp.Security.Model;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtResponse {
-
-  private String accessToken;
-  private Date expiresAt;
+@Component
+public class RefreshTokenRequest {
   private String refreshToken;
-  private Date refreshExpiresAt;
-  private String tokenType;
-
 }
