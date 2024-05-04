@@ -132,9 +132,12 @@ public class WebSecurityConfig {
         .csrf(
             csrf -> csrf.disable()) // If service is for non-browser clients we can disable CSRF protection.
         .authorizeHttpRequests()
+        .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasRole("ADMIN")
         .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN")
+        .antMatchers(WHITE_LIST_URLS_USER_ONLY).hasRole("USER")
         .antMatchers(WHITE_LIST_URLS_USER_ONLY).hasAuthority("USER")
         .antMatchers(WHITE_LIST_URLS_ALL).hasAnyAuthority("USER", "ADMIN")
+        .antMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN")
         .antMatchers(WHITE_LIST_URLS_PUBLIC).permitAll().anyRequest().authenticated()
         .and()
         /*
