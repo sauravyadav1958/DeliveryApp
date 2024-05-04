@@ -10,6 +10,7 @@ import com.example.deliveryapp.Security.Repository.SignUpRepository;
 import com.example.deliveryapp.Security.Service.email.EmailSenderService;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,12 @@ public class PasswordServiceImp implements PasswordService {
   Config config;
 
   @Override
-  public String changePassword(ChangePasswordRequest changePasswordRequest) {
+  public String changePassword(ChangePasswordRequest changePasswordRequest,
+      HttpServletRequest httpServletRequest) {
+    if (!changePasswordRequest.getEmailId()
+        .equals(httpServletRequest.getUserPrincipal().getName())) {
+      return "Your emailId is incorrect!!";
+    }
     SignUp signUp = signUpRepository.findByEmailId(changePasswordRequest.getEmailId());
     if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), signUp.getPassword())) {
       return "Password mismatch.";

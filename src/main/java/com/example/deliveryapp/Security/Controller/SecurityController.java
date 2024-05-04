@@ -15,21 +15,15 @@ import com.example.deliveryapp.Security.Service.LoginService;
 import com.example.deliveryapp.Security.Service.PasswordService;
 import com.example.deliveryapp.Security.Service.RefreshTokenService;
 import com.example.deliveryapp.Security.Service.SignUpService;
-import com.example.deliveryapp.Security.utility.JWTUtility;
 import com.example.deliveryapp.Security.Service.UserDetailsServiceImp;
-import java.util.Calendar;
-import java.util.Date;
+import com.example.deliveryapp.Security.utility.JWTUtility;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,42 +71,12 @@ public class SecurityController {
     return "Token worked!!";
   }
 
-  @PostMapping("/getToken")
-  public JwtResponse tokenLogin(@RequestBody JwtRequest jwtRequest, HttpServletResponse response)
+  @PostMapping("/jwtLogin")
+  public JwtResponse jwtLogin(@RequestBody JwtRequest jwtRequest, HttpServletResponse response)
       throws Exception {
-    try {
-      authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(
-              jwtRequest.getUsername(),
-              jwtRequest.getPassword()
-          )
-      );
-    } catch (BadCredentialsException e) {
-      throw new Exception("INVALID_CREDENTIALS", e);
-    }
+    JwtResponse jwtToken = loginService.jwtLogin(jwtRequest, response);
 
-    final UserDetails userDetails
-        = userDetailsServiceImp.loadUserByUsername(jwtRequest.getUsername());
-
-    final String accessToken =
-        jwtUtility.generateToken(userDetails);
-
-    ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
-        .httpOnly(true)
-        .secure(false)
-        .path("/")
-        .maxAge(config.getCookieExpiry())
-        .build();
-    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-    final Date expiresAt = jwtUtility.getExpirationDateFromToken(accessToken);
-    final String refreshToken = jwtUtility.generateRefreshToken(userDetails);
-    final Date refreshExpiresAtToken = jwtUtility.getExpirationDateFromToken(refreshToken);
-    final String tokenType = "Bearer";
-
-    refreshTokenService.createRefreshToken(refreshToken);
-
-    return new JwtResponse(accessToken, expiresAt, refreshToken, refreshExpiresAtToken, tokenType);
+    return jwtToken;
   }
 
   @PostMapping("/refreshToken")
@@ -120,34 +84,9 @@ public class SecurityController {
       HttpServletResponse response)
       throws Exception {
 
-    Date refreshTokenExpiryDate = jwtUtility.getExpirationDateFromToken(
-        refreshTokenRequest.getRefreshToken());
-    if (refreshTokenExpiryDate.before(Date.from(Calendar.getInstance().toInstant()))) {
-      refreshTokenService.delete(refreshTokenRequest.getRefreshToken());
-      throw new RuntimeException(
-          refreshTokenRequest.getRefreshToken()
-              + " Refresh token is expired. Please make a new login..!");
-    }
+    JwtResponse jwtToken = loginService.refreshToken(refreshTokenRequest, response);
 
-    String userName = jwtUtility.getUsernameFromToken(refreshTokenRequest.getRefreshToken());
-    final UserDetails userDetails
-        = userDetailsServiceImp.loadUserByUsername(userName);
-    final String accessToken =
-        jwtUtility.generateToken(userDetails);
-
-    ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
-        .httpOnly(true)
-        .secure(false)
-        .path("/")
-        .maxAge(config.getCookieExpiry())
-        .build();
-    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-    final Date expiresAt = jwtUtility.getExpirationDateFromToken(accessToken);
-    final String tokenType = "Bearer";
-
-    return new JwtResponse(accessToken, expiresAt, refreshTokenRequest.getRefreshToken(),
-        refreshTokenExpiryDate, tokenType);
+    return jwtToken;
   }
 
   @PostMapping("/admin/signUp")
@@ -183,9 +122,9 @@ public class SecurityController {
   }
 
   @PostMapping("/login")
-  public String login(@RequestBody LogInRequest loginInRequest) {
+  public String login(@RequestBody LogInRequest loginInRequest, HttpServletResponse response) {
 
-    String userSession = loginService.login(loginInRequest);
+    String userSession = loginService.login(loginInRequest, response);
 
     return userSession;
   }
@@ -198,10 +137,20 @@ public class SecurityController {
 
   }
 
-  @PostMapping("/changePassword")
-  public String changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+  @PostMapping("/jwtLogout")
+  public String jwtLogout(HttpServletResponse response) {
 
-    String changePasswordResult = passwordService.changePassword(changePasswordRequest);
+    String logoutResult = loginService.jwtLogout(response);
+    return logoutResult;
+
+  }
+
+  @PostMapping("/changePassword")
+  public String changePassword(@RequestBody ChangePasswordRequest changePasswordRequest,
+      HttpServletRequest httpServletRequest) {
+
+    String changePasswordResult = passwordService.changePassword(changePasswordRequest,
+        httpServletRequest);
     return changePasswordResult;
 
   }

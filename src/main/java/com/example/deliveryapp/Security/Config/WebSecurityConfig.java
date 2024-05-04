@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,39 +30,42 @@ public class WebSecurityConfig {
 
   private final UserDetailsServiceImp userDetailsServiceImp;
   private static final String[] WHITE_LIST_URLS_ADMIN_ONLY = {
-      "/admin/signUp/**",
 
       "/admin/saveRestaurant/**",
       "/updateRestaurant/**",
       "/deleteRestaurant/**",
   };
   private static final String[] WHITE_LIST_URLS_USER_ONLY = {
-      "/user/signUp/**",
 
       "/placeOrder/**",
       "/getOrder/**",
       "/getAllOrders/**",
       "/updateOrder/**"
+
   };
 
   private static final String[] WHITE_LIST_URLS_ALL = {
-      "/confirm",
-      "/resendConfirmation",
 
-      "/changePassword",
-      "/resetPasswordLink",
-      "/confirmResetPasswordLink",
+      "/changePassword/**",
+      "/tokenVerify/**",
+      "/logout/**",
+      "/jwtLogout/**"
 
-      "/tokenVerify",
   };
 
   private static final String[] WHITE_LIST_URLS_PUBLIC = {
-      "/getRestaurant",
-      "/getAllRestaurants",
-
-      "/login",
-
-      "/logout"
+      "/admin/signUp/**",
+      "/user/signUp/**",
+      "/confirm/**",
+      "/resendConfirmation/**",
+      "/login/**",
+      "/resetPasswordLink/**",
+      "/confirmResetPasswordLink/**",
+      "/getToken/**",
+      "/jwtLogin/**",
+      "/refreshToken/**",
+      "/getRestaurant/**",
+      "/getAllRestaurants/**"
   };
 
   public WebSecurityConfig(UserDetailsServiceImp userDetailsServiceImp) {
@@ -132,7 +134,7 @@ public class WebSecurityConfig {
         .authorizeHttpRequests()
         .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN")
         .antMatchers(WHITE_LIST_URLS_USER_ONLY).hasAuthority("USER")
-        .antMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN")
+        .antMatchers(WHITE_LIST_URLS_ALL).hasAnyAuthority("USER", "ADMIN")
         .antMatchers(WHITE_LIST_URLS_PUBLIC).permitAll().anyRequest().authenticated()
         .and()
         /*
@@ -141,14 +143,14 @@ public class WebSecurityConfig {
          3) No cookies, hence no session or logging out a user
          4) Each request has to carry that header in order to be authenticated
         */
-        .httpBasic(Customizer.withDefaults())
+//        .httpBasic(Customizer.withDefaults())
         /*
         1) Uses HTML form for UserName and Password
         2) The server validates the credentials provided and creates a “session” in cookie having unique token.
            If session is deleted, user will be logged out.
         */
-        .formLogin(Customizer.withDefaults())
-        .logout(logout -> logout.permitAll())
+//        .formLogin(Customizer.withDefaults())
+//        .logout(logout -> logout.permitAll())
         .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
         .sessionManagement().
         sessionCreationPolicy(SessionCreationPolicy.STATELESS);

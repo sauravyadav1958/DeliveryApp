@@ -5,6 +5,8 @@ import com.example.deliveryapp.Security.utility.JWTUtility;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -26,6 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
   @Autowired
   private UserDetailsServiceImp userDetailsServiceImp;
+
+  private List<String> excludeUrlPatterns = new ArrayList<>();
 
   @Override
   protected void doFilterInternal(HttpServletRequest httpServletRequest,
@@ -89,4 +93,13 @@ public class JwtFilter extends OncePerRequestFilter {
     }
     filterChain.doFilter(httpServletRequest, httpServletResponse);
   }
+
+//  @Override
+//  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//    // Populate excludeUrlPatterns on which one to exclude here
+//    excludeUrlPatterns.add("/getToken/**");
+//    AntPathMatcher pathMatcher = new AntPathMatcher();
+//    return excludeUrlPatterns.stream()
+//        .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
+//  }
 }
