@@ -1,6 +1,5 @@
 package com.example.deliveryapp.Security.Controller;
 
-import com.example.deliveryapp.Configuration.Config;
 import com.example.deliveryapp.Security.Enums.UserRole;
 import com.example.deliveryapp.Security.Model.ChangePasswordRequest;
 import com.example.deliveryapp.Security.Model.JwtRequest;
@@ -13,17 +12,13 @@ import com.example.deliveryapp.Security.Model.SignUpResponse;
 import com.example.deliveryapp.Security.Service.ConfirmationTokenService;
 import com.example.deliveryapp.Security.Service.LoginService;
 import com.example.deliveryapp.Security.Service.PasswordService;
-import com.example.deliveryapp.Security.Service.RefreshTokenService;
 import com.example.deliveryapp.Security.Service.SignUpService;
-import com.example.deliveryapp.Security.Service.UserDetailsServiceImp;
-import com.example.deliveryapp.Security.utility.JWTUtility;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,20 +45,6 @@ public class SecurityController {
 
   @Autowired
   PasswordService passwordService;
-
-  @Autowired
-  private JWTUtility jwtUtility;
-
-  @Autowired
-  private AuthenticationManager authenticationManager;
-  @Autowired
-  private UserDetailsServiceImp userDetailsServiceImp;
-
-  @Autowired
-  private RefreshTokenService refreshTokenService;
-
-  @Autowired
-  Config config;
 
 
   @GetMapping("/tokenVerify")

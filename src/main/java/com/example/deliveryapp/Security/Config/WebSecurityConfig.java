@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,34 +28,39 @@ public class WebSecurityConfig {
   @Autowired
   private JwtFilter jwtFilter;
 
+  @Autowired
+  private UserDetailsServiceImp userDetailsServiceImp;
 
-  private final UserDetailsServiceImp userDetailsServiceImp;
+  // URL pattern : /** --> /book , /book/20 , /book/20/author
+  // URL pattern : /* --> /book , /magazine
+  // For the above URL patterns just / will not work.
+
   private static final String[] WHITE_LIST_URLS_ADMIN_ONLY = {
 
-      "/admin/saveRestaurant/**",
+      "**/admin/saveRestaurant/**", // here we have to specify ** at the beginning also if there is nothing after last / in the api being called and the api is under hasRole().
       "/updateRestaurant/**",
       "/deleteRestaurant/**",
   };
   private static final String[] WHITE_LIST_URLS_USER_ONLY = {
 
-      "/placeOrder/**",
-      "/getOrder/**",
-      "/getAllOrders/**",
-      "/updateOrder/**"
+      "**/placeOrder/**",
+      "**/getOrder/**",
+      "**/getAllOrders/**",
+      "**/updateOrder/**"
 
   };
 
   private static final String[] WHITE_LIST_URLS_ALL = {
 
-      "/changePassword/**",
-      "/tokenVerify/**",
-      "/logout/**",
-      "/jwtLogout/**"
+      "**/changePassword/**",
+      "**/tokenVerify/**",
+      "**/logout/**",
+      "**/jwtLogout/**"
 
   };
 
   private static final String[] WHITE_LIST_URLS_PUBLIC = {
-      "/admin/signUp/**",
+      "/admin/signUp/**", // here we don't have to put ** in the beginning since these are public URL hence not under hasRole() hence no restriction.
       "/user/signUp/**",
       "/confirm/**",
       "/resendConfirmation/**",
@@ -68,9 +74,6 @@ public class WebSecurityConfig {
       "/getAllRestaurants/**"
   };
 
-  public WebSecurityConfig(UserDetailsServiceImp userDetailsServiceImp) {
-    this.userDetailsServiceImp = userDetailsServiceImp;
-  }
 
 
   @Bean
@@ -109,7 +112,7 @@ public class WebSecurityConfig {
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration builder)
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) // use for authentication of the user while login.
       throws Exception {
     return builder.getAuthenticationManager();
   }
@@ -129,15 +132,12 @@ public class WebSecurityConfig {
     http
         .cors(
             cors -> cors.disable())
-        .csrf(
-            csrf -> csrf.disable()) // If service is for non-browser clients we can disable CSRF protection.
+        .csrf(csrf -> csrf.disable())// If service is for non-browser clients we can disable CSRF protection.
         .authorizeHttpRequests()
-        .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasRole("ADMIN")
-        .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN")
+        .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasRole("ADMIN") //  applications where roles are sufficient to manage authorization
+//        .antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN") // applications where authorization is complex and dynamic
         .antMatchers(WHITE_LIST_URLS_USER_ONLY).hasRole("USER")
-        .antMatchers(WHITE_LIST_URLS_USER_ONLY).hasAuthority("USER")
-        .antMatchers(WHITE_LIST_URLS_ALL).hasAnyAuthority("USER", "ADMIN")
-        .antMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN")
+        .antMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN" )
         .antMatchers(WHITE_LIST_URLS_PUBLIC).permitAll().anyRequest().authenticated()
         .and()
         /*
@@ -153,11 +153,10 @@ public class WebSecurityConfig {
            If session is deleted, user will be logged out.
         */
 //        .formLogin(Customizer.withDefaults())
-//        .logout(logout -> logout.permitAll())
-        .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
+        .exceptionHandling(ex -> ex.authenticationEntryPoint(point)) //For handling exception for unauthenticated users
         .sessionManagement().
-        sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        sessionCreationPolicy(SessionCreationPolicy.STATELESS); // no session is created
+    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // filter before specified class
 
     return http.build();
   }

@@ -21,7 +21,7 @@ public class EmailServiceServiceImp implements EmailSenderService {
   public void send(String to, String text) {
     try {
 
-      MimeMessage mimeMessage = mailSender.createMimeMessage(); // message creation
+      MimeMessage mimeMessage = mailSender.createMimeMessage(); // message creation with important details
 
       MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 

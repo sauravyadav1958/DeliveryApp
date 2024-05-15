@@ -33,7 +33,6 @@ public class Restaurant {
   //  Third table would be created in this for mapping(containing primary Key of both the tables),
   //  and here we can Access relation from one side only i.e. from oneToMany. (or ManyToOne in case the if it is ManyToOne uni-directional)
   //  only oneToMany or manyToOne annotation is done on single table(Here mappedBy is not used since it is unidirectional).
-  //
 
   //  **************  OneToMany or ManyToOne bi-directional  **************
   //  Here mapping is done by using the primary key of One(Restaurant) table inside Many(Foods) table
@@ -78,7 +77,6 @@ public class Restaurant {
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //  @Fetch(value = FetchMode.SUBSELECT)
-//  @JsonIgnore
   private List<Customer> customerList;
 
   @Override

@@ -162,7 +162,7 @@ public class LoginServiceImp implements LoginService {
   }
 
   @Override
-  public String jwtLogout(HttpServletResponse response) {
+  public String jwtLogout(HttpServletResponse response) { // not deleting cookie
     Cookie cookie = new Cookie("accessToken", null);
     cookie.setMaxAge(0); // expires in 7 days
     cookie.setSecure(true);
