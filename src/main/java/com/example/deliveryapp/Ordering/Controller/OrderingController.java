@@ -5,6 +5,9 @@ import com.example.deliveryapp.Ordering.Service.PlaceOrderService;
 import com.example.deliveryapp.Ordering.model.CartRequest;
 import com.example.deliveryapp.Ordering.model.OrderTicketJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @Slf4j
+@Tag(name = "Ordering") // edit the name of the class in openApi doc.
 public class OrderingController {
 
   @Autowired
@@ -43,6 +47,22 @@ public class OrderingController {
 
   }
 
+  // More information about endPoint
+  @Operation(
+      description = "getAllOrders endPoint",
+      summary = "Summary for getAllOrder endPoint",
+      responses = {
+          @ApiResponse(
+              description = "Success",
+              responseCode = "200"
+          ),
+          @ApiResponse(
+              description = "Unauthorized/Invalid Token",
+              responseCode = "401"
+          )
+
+      }
+  )
   @GetMapping("/getAllOrders")
   public ResponseEntity<List<OrderTicket>> getAllOrders() {
     List<OrderTicket> orderTicketList = placeOrderService.getAllOrders();

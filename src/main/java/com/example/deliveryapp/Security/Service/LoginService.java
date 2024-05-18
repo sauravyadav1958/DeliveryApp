@@ -5,7 +5,7 @@ import com.example.deliveryapp.Security.Model.JwtRequest;
 import com.example.deliveryapp.Security.Model.JwtResponse;
 import com.example.deliveryapp.Security.Model.LogInRequest;
 import com.example.deliveryapp.Security.Model.RefreshTokenRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface LoginService {
 

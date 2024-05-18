@@ -13,8 +13,9 @@ import com.example.deliveryapp.Security.Service.ConfirmationTokenService;
 import com.example.deliveryapp.Security.Service.LoginService;
 import com.example.deliveryapp.Security.Service.PasswordService;
 import com.example.deliveryapp.Security.Service.SignUpService;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @Slf4j
+@Tag(name = "Security")
 public class SecurityController {
 
   @Autowired

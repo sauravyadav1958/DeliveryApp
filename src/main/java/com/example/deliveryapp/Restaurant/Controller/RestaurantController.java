@@ -2,6 +2,8 @@ package com.example.deliveryapp.Restaurant.Controller;
 
 import com.example.deliveryapp.Restaurant.Entity.Restaurant;
 import com.example.deliveryapp.Restaurant.Service.RestaurantService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @Slf4j
+@Tag(name = "Restaurant")
 public class RestaurantController {
 
 
   @Autowired
   RestaurantService restaurantService;
 
+  //  hide the endPoint in openApi
+  //  put this above class to hide all endPoints under the class
+  @Hidden
   @PostMapping("/admin/saveRestaurant")
   public ResponseEntity<Restaurant> saveRestaurant(@RequestBody Restaurant restaurant) {
     Restaurant savedRestaurant = restaurantService.saveRestaurant(restaurant);
@@ -35,6 +41,7 @@ public class RestaurantController {
 
   // Addition/update of Food, AddOns in Restaurant
   // Can give certain offer to customer, no addition/update other details
+  @Hidden
   @PutMapping("/admin/updateRestaurant/{restaurantId}")
   public ResponseEntity<Restaurant> updateRestaurant(@PathVariable Long restaurantId,
       @RequestBody Restaurant restaurant) {
@@ -62,7 +69,7 @@ public class RestaurantController {
 
   // ToDO delete , restaurant should get removed from customer Details,
   //  cart shouldn't get affected, may be we can put restaurantId null in cart
-
+  @Hidden
   @DeleteMapping("/admin/deleteRestaurant/{restaurantId}")
   public ResponseEntity<Restaurant> deleteRestaurant(
       @PathVariable("restaurantId") Long restaurantId) {

@@ -2,7 +2,7 @@ package com.example.deliveryapp.Security.Service;
 
 import com.example.deliveryapp.Security.Model.ChangePasswordRequest;
 import com.example.deliveryapp.Security.Model.ResetPasswordRequest;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface PasswordService {
 
