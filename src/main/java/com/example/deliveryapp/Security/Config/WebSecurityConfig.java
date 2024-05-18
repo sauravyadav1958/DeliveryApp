@@ -35,7 +35,7 @@ public class WebSecurityConfig {
   // URL pattern : /* --> /book , /magazine
   // For the above URL patterns just / will not work.
 
-  //requestMatchers URLs pattern
+  //requestMatchers URLs pattern (with jaxb-api dependency)
   // will have to give / at the end every url : /login/ --> /login will work, /login/ will not work (Authentication is required)
   // will have to give /** at the end every url : /login/** --> /login will work, /login/ will not work (Authentication is not required)
   private static final String[] WHITE_LIST_URLS_ADMIN_ONLY = {
