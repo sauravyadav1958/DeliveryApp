@@ -13,8 +13,8 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
 
   ConfirmationToken findByToken(String token);
 
-  @Modifying // update and creation queries can also be performed under @Query annotation.
-  @Transactional // will execute if the transaction is successful
+  @Modifying
+  @Transactional
   @Query(
       value = "UPDATE confirmation_token ct SET ct.confirmed_at = ?2 WHERE ct.token = ?1",
       nativeQuery = true

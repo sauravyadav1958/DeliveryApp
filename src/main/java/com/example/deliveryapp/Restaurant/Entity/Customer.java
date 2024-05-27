@@ -32,7 +32,7 @@ public class Customer {
   @ManyToMany(mappedBy = "customerList", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<Restaurant> restaurantList;
 
-  // ManyToMany gives stackoverflow error hence we can ignore This function
+
   @JsonIgnore
   public List<Restaurant> getRestaurantList() {
     return restaurantList;

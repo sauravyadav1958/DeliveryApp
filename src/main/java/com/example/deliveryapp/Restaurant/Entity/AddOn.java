@@ -36,8 +36,7 @@ public class AddOn {
   )
   private Restaurant restaurant;
 
-  // this is to avoid stack overflow in bidirectional mapping
-  // used where mappedBy is not present
+
   @JsonBackReference
   public void setRestaurant(Restaurant restaurant) {
     this.restaurant = restaurant;

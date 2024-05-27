@@ -24,7 +24,7 @@ public class ConfirmationTokenServiceImp implements ConfirmationTokenService {
   Config config;
 
   @Override
-  @Transactional // will execute if the transaction is successful
+  @Transactional
   public String confirm(String token) {
     ConfirmationToken confirmationToken = confirmationTokenRepository.findByToken(token);
     if (confirmationToken == null) {

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImp implements UserDetailsService {
-  // loading user Details
+
   private final static String USER_NOT_FOUND_MSG = "user with email %s is not found.";
 
   private final SignUpRepository signUpRepository;

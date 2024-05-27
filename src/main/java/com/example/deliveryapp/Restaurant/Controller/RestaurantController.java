@@ -28,8 +28,7 @@ public class RestaurantController {
   @Autowired
   RestaurantService restaurantService;
 
-  //  hide the endPoint in openApi
-  //  put this above class to hide all endPoints under the class
+
   @Hidden
   @PostMapping("/admin/saveRestaurant")
   public ResponseEntity<Restaurant> saveRestaurant(@RequestBody Restaurant restaurant) {
@@ -39,8 +38,7 @@ public class RestaurantController {
     return new ResponseEntity<Restaurant>(savedRestaurant, HttpStatus.CREATED);
   }
 
-  // Addition/update of Food, AddOns in Restaurant
-  // Can give certain offer to customer, no addition/update other details
+
   @Hidden
   @PutMapping("/admin/updateRestaurant/{restaurantId}")
   public ResponseEntity<Restaurant> updateRestaurant(@PathVariable Long restaurantId,
@@ -58,7 +56,7 @@ public class RestaurantController {
     return new ResponseEntity<Restaurant>(restaurant, HttpStatus.FOUND);
   }
 
-  // Todo
+
   @GetMapping("/getAllRestaurants")
   public ResponseEntity<List<Restaurant>> getAllRestaurants() {
     List<Restaurant> restaurantList = restaurantService.getAllRestaurants();
@@ -67,8 +65,7 @@ public class RestaurantController {
     return new ResponseEntity<List<Restaurant>>(restaurantList, HttpStatus.OK);
   }
 
-  // ToDO delete , restaurant should get removed from customer Details,
-  //  cart shouldn't get affected, may be we can put restaurantId null in cart
+
   @Hidden
   @DeleteMapping("/admin/deleteRestaurant/{restaurantId}")
   public ResponseEntity<Restaurant> deleteRestaurant(
@@ -79,8 +76,6 @@ public class RestaurantController {
     }
     return null;
   }
-
-  // search through food, etc
 
 
 }
