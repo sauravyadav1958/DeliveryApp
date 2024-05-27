@@ -31,7 +31,7 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping
 @Slf4j
-@Tag(name = "Ordering") // edit the name of the class in openApi doc.
+@Tag(name = "Ordering")
 public class OrderingController {
 
   String body = "{\n"
@@ -94,7 +94,7 @@ public class OrderingController {
 
   }
 
-  // More information about endPoint
+
   @Operation(
       description = "getAllOrders endPoint",
       summary = "Summary for getAllOrder endPoint",
@@ -128,11 +128,11 @@ public class OrderingController {
   @GetMapping("/restTemplate")
   public ResponseEntity<Object> getWeather() throws JsonProcessingException {
 
-    // PostForEntity gives response with body, headers, statusCode.
-    // PostForObject gives only response.
+
+
     RestTemplate restTemplate = new RestTemplate();
     JwtRequest jwtRequest = new JwtRequest("manish1958@gmail.com", "1234");
-    // getting token
+
     ResponseEntity<String> token = restTemplate.postForEntity(
         "http://localhost:8080/jwtLogin", jwtRequest,
         String.class);
@@ -140,37 +140,37 @@ public class OrderingController {
     HttpHeaders headers = new HttpHeaders();
     ObjectMapper mapper = new ObjectMapper();
     JwtResponse jwtResponse = mapper.readValue(token.getBody(), JwtResponse.class);
-    // setting token in headers
+
     headers.setBearerAuth(
         jwtResponse.getAccessToken());
 
     HttpEntity<Object> entity = new HttpEntity<>(headers);
-    // exchange for restTemplate GET with token headers
+
     ResponseEntity<String> orders = restTemplate.exchange("http://localhost:8080/getAllOrders",
         HttpMethod.GET,
         entity,
         String.class);
     log.info("getAllOrders RestTemplate exchange with token in headers GET: {}", orders);
 
-    // getForEntity for restTemplate GET with headers is not supported
 
-    // getForEntity for restTemplate GET without token headers
+
+
     ResponseEntity<String> rest = restTemplate.getForEntity(
         "http://localhost:8080/getAllRestaurants",
         String.class);
     log.info("getAllRestaurants RestTemplate without headers GET: {}", rest);
 
     CartRequest cartRequest = mapper.readValue(body, CartRequest.class);
-    // body and header setup
+
     HttpEntity<Object> entity1 = new HttpEntity<>(cartRequest, headers);
 
-    // exchange for restTemplate POST with body, and token in headers
+
     ResponseEntity<String> orderAdded = restTemplate.exchange(
         "http://localhost:8080/placeOrder", HttpMethod.POST, entity1,
         String.class);
     log.info("placeOrder RestTemplate exchange with body, and token in headers POST: {}",
         orderAdded);
-    // postForEntity for restTemplate POST with body, and token in headers
+
     ResponseEntity<String> orderAdded1 = restTemplate.postForEntity(
         "http://localhost:8080/placeOrder", entity1,
         String.class);

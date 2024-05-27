@@ -37,14 +37,14 @@ import io.swagger.v3.oas.annotations.servers.Server;
         )
     },
     security = {
-        // token comes inside headers of the endPoints
-        // Put this above a class if you want headers to be visible only for endpoints under that particular class.
+
+
         @SecurityRequirement(
             name = "bearerAuth"
         )
     }
 )
-// Authentication feature
+
 @SecurityScheme(
     name = "bearerAuth",
     description = "Jwt Auth description",

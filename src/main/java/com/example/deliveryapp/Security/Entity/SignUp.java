@@ -47,7 +47,7 @@ public class SignUp implements UserDetails {
   private String firstName;
   private String lastName;
   @Column(
-      name = "email_address" // if this is done after table creation then adds one extra column
+      name = "email_address"
   )
   private String emailId;
   private String password;

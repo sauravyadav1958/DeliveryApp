@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter { // executed once only for a request
+public class JwtFilter extends OncePerRequestFilter {
 
   @Autowired
   private JWTUtility jwtUtility;
@@ -73,8 +73,6 @@ public class JwtFilter extends OncePerRequestFilter { // executed once only for 
       UserDetails userDetails
           = userDetailsServiceImp.loadUserByUsername(userName);
 
-      // UsernamePasswordAuthenticationToken implements authentication interface, being used later for setting authentication.
-      // It can also be used for authentication using username and password.
       if (jwtUtility.validateToken(token, userDetails)) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
             = new UsernamePasswordAuthenticationToken(userDetails,
