@@ -151,11 +151,11 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(r -> r
             .requestMatchers(WHITE_LIST_URLS_ADMIN_ONLY)
             .hasRole("ADMIN") //applications where roles are sufficient to manage authorization
-            //.antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN") //applications where authorization is complex and dynamic
+            //.antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN") //applications where authorization is complex and dynamic // TODO example with diff
             .requestMatchers(WHITE_LIST_URLS_USER_ONLY).hasRole("USER")
             .requestMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN")
             .requestMatchers(WHITE_LIST_URLS_PUBLIC).permitAll()
-            .requestMatchers(OPEN_API).permitAll().anyRequest().authenticated())
+            .requestMatchers(OPEN_API).permitAll().anyRequest().authenticated()) // TODO use of .anyRequest().authenticated()
         /*
          1) Basic Auth : uses header which is base64 encoding of the username and password joined by a single colon.
          2) Format -> Authorization: Basic Base64-encoded(username:password)

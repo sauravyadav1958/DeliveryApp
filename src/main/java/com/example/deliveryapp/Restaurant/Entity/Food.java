@@ -25,9 +25,12 @@ public class Food {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "food_sequence")
   private Long foodId;
   private String foodName;
-  private int foodPrice;
+  private String imageUrl;
+  private String imageSearchKeyword;
+  private String description;
+  private double foodPrice;
   private int foodStockQuantity;
-
+  // TODO here can we have fetch type ?
   @ManyToOne(
       cascade = CascadeType.ALL
   )

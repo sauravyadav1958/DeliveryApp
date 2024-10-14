@@ -29,6 +29,8 @@ public class Restaurant {
   private Long restaurantId;
   private String restaurantName;
   private String address;
+  private String imageUrl;
+  private String imageSearchKeyword;
   //  **************  OneToMany or ManyToOne uni-directional  **************
   //  Third table would be created in this for mapping(containing primary Key of both the tables),
   //  and here we can Access relation from one side only i.e. from oneToMany. (or ManyToOne in case the if it is ManyToOne uni-directional)
@@ -57,6 +59,7 @@ public class Restaurant {
       fetch = FetchType.LAZY
   )
   // TODO cannot simultaneously fetch multiple bags
+  // TODO use of @Fetch
   @Fetch(value = FetchMode.SUBSELECT)
 //  @JsonIgnore
   private List<AddOn> addOnList;
@@ -85,6 +88,8 @@ public class Restaurant {
         "restaurantId=" + restaurantId +
         ", restaurantName='" + restaurantName + '\'' +
         ", address='" + address + '\'' +
+        ", imageUrl='" + imageUrl + '\'' +
+        ", imageSearchKeyword='" + imageSearchKeyword + '\'' +
         '}';
   }
 

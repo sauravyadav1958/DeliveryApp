@@ -33,6 +33,7 @@ public class Customer {
   private List<Restaurant> restaurantList;
 
   // ManyToMany gives stackoverflow error hence we can ignore This function
+  // TODO can I do JasonManagedBackReference here?
   @JsonIgnore
   public List<Restaurant> getRestaurantList() {
     return restaurantList;

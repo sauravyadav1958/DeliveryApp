@@ -25,7 +25,10 @@ public class AddOn {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "addOn_sequence")
   private Long addOnId;
   private String addOnName;
-  private int addOnPrice;
+  private String imageUrl;
+  private String imageSearchKeyword;
+  private String description;
+  private double addOnPrice;
   private int addOnStockQuantity;
 
   @ManyToOne(
