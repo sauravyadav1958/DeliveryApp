@@ -47,6 +47,7 @@ public class WebSecurityConfig {
   private static final String[] WHITE_LIST_URLS_USER_ONLY = {
 
       "/placeOrder/",
+      "/verifySignature/",
       "/getOrder/",
       "/getAllOrders/",
       "/updateOrder/"
@@ -63,6 +64,7 @@ public class WebSecurityConfig {
   };
 
   private static final String[] WHITE_LIST_URLS_PUBLIC = {
+
       "/admin/signUp/**",
       // (applicable for antMatchers) here we don't have to put ** in the beginning since these are public URL hence not under hasRole() hence no restriction.
       "/user/signUp/**",

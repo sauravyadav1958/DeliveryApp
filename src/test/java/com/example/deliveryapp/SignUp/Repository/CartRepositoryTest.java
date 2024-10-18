@@ -65,8 +65,8 @@ class CartRepositoryTest {
     String addOnJson = Arrays.asList(addOn1Json, addOn2Json).toString();
 
     Cart cart = Cart.builder()
-        .totalAmount(500L)
-        .restaurantId(152L)
+//        .totalAmount(500L)
+//        .restaurantId(152L)
 //        .foodWithQty(foodJson)
 //        .addOnWithQty(addOnJson)
         .build();
@@ -76,7 +76,7 @@ class CartRepositoryTest {
     Payment payment = Payment.builder()
 //        .cart(cart)
         .status("success")
-        .totalAmount(500L)
+//        .totalAmount(500L)
         .build();
 
     cart.setPayment(payment);

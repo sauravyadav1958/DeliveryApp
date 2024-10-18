@@ -1,11 +1,13 @@
 package com.example.deliveryapp.Ordering.Entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,9 +25,15 @@ public class Cart {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_sequence")
   private Long cartId;
   private Long restaurantId;
-  private Long totalAmount;
+  private Double totalAmount;
+  @Lob
+  @Column(columnDefinition = "LONGTEXT")
   private String foodList;
+  @Lob
+  @Column(columnDefinition = "LONGTEXT")
   private String addOnList;
+  private double deliveryCharge;
+  private double tax;
   // ******************   cascadeType meaning   *******************
   // cascadeType if applied for a table, any action(Save,Delete,etc)
   // taken on that table will also be applied to the table which is in relation.

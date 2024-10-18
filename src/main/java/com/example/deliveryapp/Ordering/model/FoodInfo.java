@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 public class FoodInfo {
   private Long foodId;
   private String foodName;
-  private int foodPrice;
+  private String imageUrl;
+  private String imageSearchKeyword;
+  private String description;
+  private double foodPrice;
   private int foodStockQuantity;
   private int qtyAdded;
 }

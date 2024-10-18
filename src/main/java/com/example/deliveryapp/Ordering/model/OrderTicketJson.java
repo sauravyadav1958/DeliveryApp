@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 @Data
 public class OrderTicketJson {
 
-  private Long orderId;
+  private String orderId;
   private Long restaurantId;
-  private CartRequest cartRequest;
-  private Long totalAmount;
+  private FoodInfo foodInfo;
+  private AddOnInfo addOnInfo;
+  private double totalAmount;
   private String status;
 }

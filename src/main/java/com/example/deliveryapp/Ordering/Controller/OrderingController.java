@@ -3,16 +3,19 @@ package com.example.deliveryapp.Ordering.Controller;
 import com.example.deliveryapp.Ordering.Entity.OrderTicket;
 import com.example.deliveryapp.Ordering.Service.PlaceOrderService;
 import com.example.deliveryapp.Ordering.model.CartRequest;
-import com.example.deliveryapp.Ordering.model.OrderTicketJson;
 import com.example.deliveryapp.Security.Model.JwtRequest;
 import com.example.deliveryapp.Security.Model.JwtResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.razorpay.RazorpayException;
+import com.razorpay.Utils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -78,15 +81,39 @@ public class OrderingController {
   PlaceOrderService placeOrderService;
 
   @PostMapping("/placeOrder")
-  public ResponseEntity<OrderTicketJson> placeOrder(@RequestBody CartRequest cartRequest)
+  public ResponseEntity<OrderTicket> placeOrder(@RequestBody Map<String, Object> map)
       throws JsonProcessingException {
 
-    OrderTicketJson savedOrderTicket = placeOrderService.placeOrder(cartRequest);
-    return new ResponseEntity<OrderTicketJson>(savedOrderTicket, HttpStatus.OK);
+    try {
+
+      OrderTicket orderTicket = placeOrderService.placeOrder(map);
+
+      return new ResponseEntity<OrderTicket>(orderTicket, HttpStatus.OK);
+    } catch (RazorpayException e) {
+      throw new RuntimeException(e);
+    }
   }
 
+  // TODO implement
+  @PostMapping("/verifySignature")
+  public ResponseEntity<Boolean> verifySignature(@RequestBody CartRequest cartRequest)
+      throws JsonProcessingException, RazorpayException {
+
+    String secret = "EnLs21M47BllR3X8PSFtjtbd";
+
+    JSONObject options = new JSONObject();
+    options.put("razorpay_order_id", "order_IEIaMR65cu6nz3");
+    options.put("razorpay_payment_id", "pay_IH4NVgf4Dreq1l");
+    options.put("razorpay_signature",
+        "0d4e745a1838664ad6c9c9902212a32d627d68e917290b0ad5f08ff4561bc50f");
+
+    boolean status = Utils.verifyPaymentSignature(options, secret);
+    return new ResponseEntity<Boolean>(status, HttpStatus.OK);
+  }
+
+
   @GetMapping("/getOrder/{orderId}")
-  public ResponseEntity<OrderTicket> getOrder(@PathVariable Long orderId) {
+  public ResponseEntity<OrderTicket> getOrder(@PathVariable String orderId) {
     OrderTicket savedOrderTicket = placeOrderService.getOrder(orderId);
 
     return new ResponseEntity<OrderTicket>(savedOrderTicket, HttpStatus.OK);
@@ -118,7 +145,7 @@ public class OrderingController {
   }
 
   @PutMapping("/updateOrder/{orderId}")
-  public ResponseEntity<OrderTicket> updateOrder(@PathVariable Long orderId,
+  public ResponseEntity<OrderTicket> updateOrder(@PathVariable String orderId,
       @RequestBody OrderTicket orderTicket) {
     OrderTicket updatedOrderTicket = placeOrderService.updateOrder(orderId, orderTicket);
 

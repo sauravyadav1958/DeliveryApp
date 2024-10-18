@@ -18,8 +18,9 @@ public class Payment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_sequence")
-  private Long paymentId;
-  private Long totalAmount;
+  private Long Id;
+  private String razorpayPaymentId;
+  private Double totalAmount;
   private String status;
 //  @OneToOne(
 //      cascade = CascadeType.ALL,

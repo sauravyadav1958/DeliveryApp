@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 public class AddOnInfo {
   private Long addOnId;
   private String addOnName;
-  private int addOnPrice;
+  private String imageUrl;
+  private String imageSearchKeyword;
+  private String description;
+  private double addOnPrice;
   private int addOnStockQuantity;
   private int qtyAdded;
 }

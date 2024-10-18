@@ -1,18 +1,19 @@
 package com.example.deliveryapp.Ordering.Service;
 
 import com.example.deliveryapp.Ordering.Entity.OrderTicket;
-import com.example.deliveryapp.Ordering.model.CartRequest;
-import com.example.deliveryapp.Ordering.model.OrderTicketJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.razorpay.RazorpayException;
 import java.util.List;
+import java.util.Map;
 
 public interface PlaceOrderService {
 
-  OrderTicketJson placeOrder(CartRequest cartRequest) throws JsonProcessingException;
+  OrderTicket placeOrder(Map<String, Object> map)
+      throws JsonProcessingException, RazorpayException;
 
-  OrderTicket getOrder(Long orderId);
+  OrderTicket getOrder(String orderId);
 
   List<OrderTicket> getAllOrders();
 
-  OrderTicket updateOrder(Long orderId, OrderTicket orderTicket);
+  OrderTicket updateOrder(String orderId, OrderTicket orderTicket);
 }

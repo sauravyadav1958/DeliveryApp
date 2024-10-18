@@ -16,6 +16,10 @@ public class Config {
 
   @Value("${jwt.cookieExpiry}")
   private Long cookieExpiry;
+  @Value("${Rzp_key_id}")
+  private String Rzp_key_id;
+  @Value("${Rzp_key_secret}")
+  private String Rzp_key_secret;
 
   public String getPort() {
     return port;
@@ -24,9 +28,16 @@ public class Config {
   public String getHostname() {
     return hostName;
   }
+
   public Long getCookieExpiry() {
     return cookieExpiry;
   }
 
+  public String getRzp_key_id() {
+    return Rzp_key_id;
+  }
 
+  public String getRzp_key_secret() {
+    return Rzp_key_secret;
+  }
 }
