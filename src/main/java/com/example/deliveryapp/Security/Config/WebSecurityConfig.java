@@ -44,17 +44,14 @@ public class WebSecurityConfig {
       "/updateRestaurant/",
       "/deleteRestaurant/",
   };
-  private static final String[] WHITE_LIST_URLS_USER_ONLY = {
+
+  private static final String[] WHITE_LIST_URLS_ALL = {
 
       "/placeOrder/",
       "/verifySignature/",
       "/getOrder/",
       "/getAllOrders/",
-      "/updateOrder/"
-
-  };
-
-  private static final String[] WHITE_LIST_URLS_ALL = {
+      "/updateOrder/",
 
       "/changePassword/",
       "/tokenVerify/",
@@ -154,7 +151,6 @@ public class WebSecurityConfig {
             .requestMatchers(WHITE_LIST_URLS_ADMIN_ONLY)
             .hasRole("ADMIN") //applications where roles are sufficient to manage authorization
             //.antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN") //applications where authorization is complex and dynamic // TODO example with diff
-            .requestMatchers(WHITE_LIST_URLS_USER_ONLY).hasRole("USER")
             .requestMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN")
             .requestMatchers(WHITE_LIST_URLS_PUBLIC).permitAll()
             .requestMatchers(OPEN_API).permitAll().anyRequest().authenticated()) // TODO use of .anyRequest().authenticated()
