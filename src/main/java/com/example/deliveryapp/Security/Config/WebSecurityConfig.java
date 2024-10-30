@@ -35,8 +35,10 @@ public class WebSecurityConfig {
   // For the above URL patterns just / will not work.
 
   //requestMatchers URLs pattern (with jaxb-api dependency)
-  // will have to give / at the end every url : /login/ --> /login will work, /login/ will not work (Authentication is required)
-  // will have to give /** at the end every url : /login/** --> /login will work, /login/ will not work (Authentication is not required)
+  //  / at the end every url : /login/ --> /login work, /login/ not work.
+  //  /** at the end every url : /login/** --> URL that starts with /login/, /login not work, /login/ not work, /login/user will work
+  //  /admin/signUp/** : /admin/signUp will work, /admin/signUp/ will not work
+  //  Url shouldn't have just / at the end.
   private static final String[] WHITE_LIST_URLS_ADMIN_ONLY = {
 
       "/admin/saveRestaurant/",
@@ -111,22 +113,18 @@ public class WebSecurityConfig {
 // TODO how to handle all type of authentication
 
   @Bean
-  public DaoAuthenticationProvider daoAuthenticationProvider() {
-
-    DaoAuthenticationProvider provider = new DaoAuthenticationProvider(); // retrieves user information.
-
+  public DaoAuthenticationProvider daoAuthenticationProvider() { // Gets included in AuthenticationManger below.
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider(); // retrieves user information from UserDetailsService.
     provider.setPasswordEncoder(passwordEncoder());
-
     provider.setUserDetailsService(
         userDetailsServiceImp); // setting userDetails /*userDetailsServiceImp initialized? */
-
     return provider;
   }
 
   @Bean
   public AuthenticationManager authenticationManager(
       AuthenticationConfiguration builder) // use for authentication of the user while login.
-      throws Exception {
+      throws Exception { // AuthenticationConfiguration automatically detects all AuthenticationProvider beans, e.g. DaoAuthenticationProvider
     return builder.getAuthenticationManager();
   }
 
@@ -153,7 +151,8 @@ public class WebSecurityConfig {
             //.antMatchers(WHITE_LIST_URLS_ADMIN_ONLY).hasAuthority("ADMIN") //applications where authorization is complex and dynamic // TODO example with diff
             .requestMatchers(WHITE_LIST_URLS_ALL).hasAnyRole("USER", "ADMIN")
             .requestMatchers(WHITE_LIST_URLS_PUBLIC).permitAll()
-            .requestMatchers(OPEN_API).permitAll().anyRequest().authenticated()) // TODO use of .anyRequest().authenticated()
+            .requestMatchers(OPEN_API).permitAll().anyRequest()
+            .authenticated()) // .anyRequest().authenticated(): Require authentication for any other request
         /*
          1) Basic Auth : uses header which is base64 encoding of the username and password joined by a single colon.
          2) Format -> Authorization: Basic Base64-encoded(username:password)
@@ -172,7 +171,7 @@ public class WebSecurityConfig {
         .sessionManagement(
             s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // no session is created
     http.addFilterBefore(jwtFilter,
-        UsernamePasswordAuthenticationFilter.class); // filter before specified class
+        UsernamePasswordAuthenticationFilter.class); // jwtFilter before Spring Security's default UsernamePasswordAuthenticationFilter
 
     return http.build();
   }

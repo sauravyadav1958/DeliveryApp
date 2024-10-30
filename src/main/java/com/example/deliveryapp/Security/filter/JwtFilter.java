@@ -69,19 +69,19 @@ public class JwtFilter extends OncePerRequestFilter { // executed once only for 
       logger.info("Invalid Header Value !! ");
     }
 
-    if (null != userName && SecurityContextHolder.getContext().getAuthentication() == null) {
+    if (null != userName && SecurityContextHolder.getContext().getAuthentication() == null) { // checking if authentication is set, if not, it is considered unauthenticated
       UserDetails userDetails
           = userDetailsServiceImp.loadUserByUsername(userName);
 
-      // UsernamePasswordAuthenticationToken implements authentication interface, being used later for setting authentication.
-      // It can also be used for authentication using username and password.
+      // UsernamePasswordAuthenticationToken implements authentication interface, simple presentation of a username and password.
+      // being used later for setting authentication.
       if (jwtUtility.validateToken(token, userDetails)) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
             = new UsernamePasswordAuthenticationToken(userDetails,
             null, userDetails.getAuthorities());
 
         usernamePasswordAuthenticationToken.setDetails(
-            new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
+            new WebAuthenticationDetailsSource().buildDetails(httpServletRequest) //add additional request-related information, eg:client’s IP address
         );
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

@@ -14,7 +14,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
   // loading user Details
   private final static String USER_NOT_FOUND_MSG = "user with email %s is not found.";
 
-  private final SignUpRepository signUpRepository;
+  private final SignUpRepository signUpRepository; // TODO autowired not required
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
