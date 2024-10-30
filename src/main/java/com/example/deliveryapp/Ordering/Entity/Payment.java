@@ -31,6 +31,7 @@ public class Payment {
 //      name = "cart_id",
 //      referencedColumnName = "cartId"
 //  )
+//  @OneToOne
 //  private Cart cart;
 
 }

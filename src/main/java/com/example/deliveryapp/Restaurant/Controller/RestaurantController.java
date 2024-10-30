@@ -80,7 +80,6 @@ public class RestaurantController {
     return null;
   }
 
-  // search through food, etc
 
 
 }

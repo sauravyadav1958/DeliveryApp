@@ -62,8 +62,6 @@ public class Cart {
   // If this is not present, both the tables which are in relation
   // will use other table's primary for mapping relation which is not required since one is enough.
 
-  // TODO Is mappedBy payment possible here in this class (It is by default here for unidirectional mapping ?)
-  // TODO what about bidirectional Mapping ? OneTOne and ManyToMany
   @OneToOne(cascade = CascadeType.ALL,
 //      mappedBy = "cart",
       fetch = FetchType.EAGER

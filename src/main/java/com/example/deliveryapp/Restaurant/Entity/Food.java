@@ -30,7 +30,6 @@ public class Food {
   private String description;
   private double foodPrice;
   private int foodStockQuantity;
-  // TODO here can we have fetch type ?
   @ManyToOne(
       cascade = CascadeType.ALL
   )
