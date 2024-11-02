@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @Slf4j
-@Tag(name = "Restaurant")
+@Tag(name = "Restaurant") // edit the name of the class in openApi doc.
 public class RestaurantController {
 
 

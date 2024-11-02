@@ -33,12 +33,13 @@ import io.swagger.v3.oas.annotations.servers.Server;
         ),
         @Server(
             description = "DEV ENV",
-            url = "http://localhost:8081"
+            url = "http://delivery-app-1-0.onrender.com"
         )
     },
     security = {
         // token comes inside headers of the endPoints
-        // Put this above a class if you want headers to be visible only for endpoints under that particular class.
+        // Put this above a class if you want headers to be visible only for endpoints under that particular class, vice versa for specific endPoint/api.
+        // Since we have defined it here, public api will also show Lock Icon in UI but would still run without authentication.
         @SecurityRequirement(
             name = "bearerAuth"
         )
