@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
+@RequestMapping // for mapping of requests like post,get,etc. Base url can also be defined here for APIs
 @Slf4j
 @Tag(name = "Restaurant") // edit the name of the class in openApi doc.
 public class RestaurantController {
